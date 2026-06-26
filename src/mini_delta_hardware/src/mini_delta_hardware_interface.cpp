@@ -17,7 +17,7 @@ namespace mini_delta_hardware {
     servo1_id_ =10;
     servo2_id_ =11;
     servo3_id_ =12;
-    serial_device_ = "/dev/ttyUSB0"; // default device path
+    serial_device_ = "/dev/ttyACM0"; // default device path
     servo_driver_= std::make_shared<ArduinoServoDriver>(serial_device_);
 
     hw_positions_.resize(info_.joints.size(), 0.0);
