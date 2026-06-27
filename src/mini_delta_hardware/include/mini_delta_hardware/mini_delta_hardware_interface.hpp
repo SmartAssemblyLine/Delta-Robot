@@ -6,6 +6,8 @@
 #include "hardware_interface/system_interface.hpp"
 #include "mini_delta_hardware/ArduinoServoDriver.hpp"
 #include "rclcpp_lifecycle/state.hpp"
+#include "std_msgs/msg/string.hpp"
+#include "rclcpp/rclcpp.hpp"
 
 #include <memory>
 #include <string>
@@ -49,7 +51,9 @@ private:
     std::vector<double> hw_velocity_commands_;
     std::vector<double> hw_states_;
     std::vector<double> hw_velocities_;
-    
+    std::shared_ptr<rclcpp::Node> mission_node_;
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pick_pub_;
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr pump_sub_;
 }; // class MiniDeltaHardwareInterface
 
 } // namespace mini_delta_hardware

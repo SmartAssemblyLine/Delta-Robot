@@ -37,6 +37,16 @@ namespace mini_delta_hardware {
         if (servo_driver_->init() != 0) {
             return hardware_interface::CallbackReturn::ERROR;
         }
+
+        mission_node_=std::make_shared<rclcpp::Node>("mini_delta_hardware_interface_node");
+        pick_pub_= mission_node_->create_publisher<std_msgs::msg::String>("/pick_trigger",10);
+        pump_sub_= mission_node_->create_subscription<std_msgs::msg::String>("/pump_command",10,[this](const std_msgs::msg::String::SharedPtr msg)
+        {
+            servo_driver_->sendCommand(msg->data);
+            RCLCPP_INFO(rclcpp::get_logger("MiniDeltaHardwareInterface"), "Received pump command: %s", msg->data.c_str());
+        }); 
+
+
         return hardware_interface::CallbackReturn::SUCCESS; // else success
     }
 
@@ -99,9 +109,23 @@ namespace mini_delta_hardware {
             hw_states_[i]=hw_positions_[i];
             hw_velocities_[i] = hw_velocity_commands_[i];
         } 
+
+        std::string msg = servo_driver_->readLine();
+        
+        if (!msg.empty()) {
+            RCLCPP_INFO(rclcpp::get_logger("MiniDeltaHardwareInterface"), "Received from Arduino: %s", msg.c_str());
+            if (msg == "PICK") {
+                std_msgs::msg::String pick_msg;
+                pick_msg.data = "PICK";
+                pick_pub_->publish(pick_msg);
+            }
+        }
+
+
+        rclcpp::spin_some(mission_node_); // process callbacks for the node
         
         // Read positions from servos (not implemented)
-    return hardware_interface::return_type::OK;
+        return hardware_interface::return_type::OK;
     }
 
     hardware_interface::return_type MiniDeltaHardwareInterface::write(

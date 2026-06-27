@@ -145,6 +145,27 @@ public:
         return 0.0;
     }
 
+
+    std::string readLine() {
+        if (!serial_port_.IsDataAvailable()) return "";
+        
+        std::string line;
+        try {
+            serial_port_.ReadLine(line, '\n', 0);  // non-blocking
+            line.erase(line.find_last_not_of(" \r\n") + 1);
+            RCLCPP_INFO(rclcpp::get_logger("ArduinoServoDriver"), "Arduino says: '%s'", line.c_str());
+            return line;
+        } catch (...) {
+            return "";
+        }
+    }
+
+    void sendCommand(const std::string & cmd) {
+        if (!serial_port_.IsOpen()) return;
+        serial_port_.Write(cmd + "\n");
+        serial_port_.DrainWriteBuffer();
+    }
+
     ~ArduinoServoDriver() {
         if (serial_port_.IsOpen())
             serial_port_.Close();
