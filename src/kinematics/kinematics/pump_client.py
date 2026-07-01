@@ -23,10 +23,10 @@ class State(Enum):
 
 
 # ── Coordinates ───────────────────────────────────────────
-PICK_X, PICK_Y = 0.25,  0.0
-DROP_X, DROP_Y = -0.25,  0.0
+PICK_X, PICK_Y = -0.25,  0.0
+DROP_X, DROP_Y = 0.25,  0.0
 Z_HOME         = -0.48
-Z_APPROACH     = -0.55
+Z_APPROACH     = -0.5
 Z_GRAB         = -0.7
 
 
