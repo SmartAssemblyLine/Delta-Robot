@@ -60,6 +60,10 @@ class deltanode(Node):
         self.logged_positions = []
         self.logged_time      = []
         self.start_time       = self.get_clock().now()
+        self._pump_timer         = None
+        self._pump_send_timer    = None
+        self._release_timer      = None
+        self._release_send_timer = None
 
         self.get_logger().info('Delta client ready. Waiting for pick trigger...')
 
@@ -74,7 +78,7 @@ class deltanode(Node):
         self.send_trajectory([
             (PICK_X, PICK_Y, Z_APPROACH),  # point 1 — above product
             (PICK_X, PICK_Y, Z_GRAB),       # point 2 — down to product
-        ], durations=[1, 2])
+        ], durations=[(1,0), (1,5_000_000_00)])  # durations in seconds and nanoseconds
 
     # ─────────────────────────────────────────────────────
     def send_trajectory(self, xyz_list, durations):
@@ -85,7 +89,7 @@ class deltanode(Node):
             'link_0_JOINT_3'
         ]
 
-        for xyz, sec in zip(xyz_list, durations):
+        for xyz, (sec,nanosec )in zip(xyz_list, durations):
             x, y, z = xyz
             thetas = inverse(x, y, z)
 
@@ -100,7 +104,7 @@ class deltanode(Node):
             point.positions     = thetas
             point.velocities    = [0.0] * 3
             point.accelerations = [0.0] * 3
-            point.time_from_start = Duration(sec=sec)
+            point.time_from_start = Duration(sec=sec,nanosec=nanosec)
             trajectory.points.append(point)
 
         goal_msg = FollowJointTrajectory.Goal()
@@ -148,7 +152,7 @@ class deltanode(Node):
             self.send_trajectory([
                 (DROP_X, DROP_Y, Z_APPROACH),  # above drop zone
                 (DROP_X, DROP_Y, Z_GRAB),       # down to drop zone
-            ], durations=[1, 2])
+            ], durations=[(1,0), (1,5_000_000_00)])
 
         elif self.state == State.DROP_APPROACH:
             # arrived at drop zone → pump OFF → lift up
@@ -164,7 +168,7 @@ class deltanode(Node):
             self.state = State.HOMING
             self.send_trajectory([
                 (0.0, 0.0, Z_HOME),            # home position
-            ], durations=[1])
+            ], durations=[(1,0)])
 
         elif self.state == State.HOMING:
             # cycle complete
@@ -174,15 +178,16 @@ class deltanode(Node):
 
     def _on_pump_ready(self):
         self.destroy_timer(self._pump_timer)  # one shot
+        
         self.send_trajectory([
             (PICK_X, PICK_Y, Z_APPROACH),
-        ], durations=[1])
+        ], durations=[(1,0)])
 
     def _on_release_ready(self):
         self.destroy_timer(self._release_timer)  # one shot
         self.send_trajectory([
             (DROP_X, DROP_Y, Z_APPROACH),  # lift back up
-        ], durations=[1])    
+        ], durations=[(1,0)])    
 
     # ─────────────────────────────────────────────────────
     def publish_pump(self, state):

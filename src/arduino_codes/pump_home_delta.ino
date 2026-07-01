@@ -70,6 +70,21 @@ void loop() {
   } else {
     checkButton();
     readSerial();
+
+    if (moving) {
+      bool all_done = true;
+      for (int i = 0; i < 3; i++) {
+        if (steppers[i]->distanceToGo() != 0) {
+          all_done = false;
+          break;
+        }
+      }
+      if (all_done) {
+        moving = false;
+        Serial.println("DONE");
+      }
+    }
+    
     // checkDone();   // ← sends "DONE" when all motors reach target
   }
 
@@ -87,6 +102,8 @@ void waitForStart() {
     }
   }
 }
+
+
 
 // ─────────────────────────────────────────────────────────
 void checkButton() {
@@ -155,12 +172,14 @@ void readSerial() {
 
         // Serial.println("pump on");
         digitalWrite(PUMP_PIN, HIGH);
+        digitalWrite(PUMP_IN2, LOW);   
         buf = "";
         return;
       }
       if (buf == "PUMP_OFF") {
         // Serial.println(" pump off");
         digitalWrite(PUMP_PIN, LOW);
+        digitalWrite(PUMP_IN2, LOW);   
         buf = "";
         return;
       }
@@ -187,7 +206,7 @@ void readSerial() {
         for (int j = 0; j < 3; j++) {
           steppers[j]->moveTo(values[j]);
         }
-        // moving = true;   // ← start watching for DONE
+        moving = true;   // ← start watching for DONE
       }
       buf = "";
 
