@@ -91,5 +91,5 @@ def inverse(x0, y0, z0):
     return theta1, theta2, theta3
 
 
-thatas=inverse(-0.25,-0.0,-0.75)
+thatas=inverse(-0.25,-0.0,-0.5)
 print(thatas)

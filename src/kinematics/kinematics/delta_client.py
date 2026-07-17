@@ -43,8 +43,8 @@ class deltanode(Node):
         pointf5 = JointTrajectoryPoint()
         pointf6 = JointTrajectoryPoint()
 
-        thetasi = inverse(0.4,0.0,-0.75)
-        thetasf = inverse(-0.4,0.0,-0.75)
+        thetasi = inverse(0.0,0.0,-0.75)
+        thetasf = inverse(0.0,0.0,-0.5)
         thetasf2 = inverse(0.0,0.2,-0.5)
         thetasf3 = inverse(0.0,-0.2,-0.5)
         thetasf4 = inverse(0.0,0.1,-0.6)

@@ -3,16 +3,16 @@
 #define EN_PIN     15
 #define BUTTON_PIN A4   // change to your pin
 #define PUMP_PIN   A0   // change to your pin
-#define PUMP_IN2  A1 
+#define PUMP_IN2  A2
 
-AccelStepper stepper0(AccelStepper::DRIVER, 4, 5);
+AccelStepper stepper0(AccelStepper::DRIVER, 6, 7);
 AccelStepper stepper1(AccelStepper::DRIVER, 2, 3);
-AccelStepper stepper2(AccelStepper::DRIVER, 6, 7);
+AccelStepper stepper2(AccelStepper::DRIVER, 4, 5);
 
 AccelStepper* steppers[3] = {&stepper0, &stepper1, &stepper2};
 
-const int   LIMIT_PINS[3] = {10, 8, 9};  // fill your first pin
-const bool  INVERT_DIR[3] = {false, true, true};
+const int   LIMIT_PINS[3] = {10, 12, 11};  // fill your first pin
+const bool  INVERT_DIR[3] = {false, false, false};
 const float MAX_SPEED     = 8000.0;
 const float MAX_ACCEL     = 6000.0;
 const float HOME_SPEED    = 600.0;
@@ -27,12 +27,12 @@ static String buf   = "";
 void setup() {
   Serial.begin(115200);
 
-  pinMode(EN_PIN,     OUTPUT);
+  pinMode(EN_PIN,     OUTPUT); 
   digitalWrite(EN_PIN, LOW);
   
 
   // pinMode(BUTTON_PIN, INPUT_PULLUP);
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_PIN, INPUT);
   pinMode(PUMP_IN2, OUTPUT);
   digitalWrite(PUMP_IN2, LOW);
 
@@ -107,22 +107,24 @@ void waitForStart() {
 
 // ─────────────────────────────────────────────────────────
 void checkButton() {
-  if (digitalRead(BUTTON_PIN) == LOW) {
-    delay(50);  // debounce
-    if (digitalRead(BUTTON_PIN) == LOW) {
-      Serial.println("PICK");
-      // wait for release
-      while (digitalRead(BUTTON_PIN) == LOW);
-    }
-  }
-}
+//   if (digitalRead(BUTTON_PIN) == HIGH) {
+//     delay(50);  // debounce
+//     if (digitalRead(BUTTON_PIN) == HIGH) {
+//       Serial.println("PICK");
+//       // wait for release
+//       while (digitalRead(BUTTON_PIN) == HIGH);
+//     }
+//   }
+// }
+if (digitalRead(BUTTON_PIN) == LOW) {
+       Serial.println("PICK");}}
 
 // ─────────────────────────────────────────────────────────
 
 // ─────────────────────────────────────────────────────────
 void doHoming() {
   for (int i = 0; i < 3; i++) {
-    if (!joint_homed[i] && digitalRead(LIMIT_PINS[i]) == LOW) {
+    if (!joint_homed[i] && digitalRead(LIMIT_PINS[i]) == HIGH) {
       steppers[i]->setSpeed(0);
       steppers[i]->moveTo(steppers[i]->currentPosition());
       steppers[i]->setCurrentPosition(0);
@@ -132,12 +134,12 @@ void doHoming() {
 
   bool all_triggered = joint_homed[0] && joint_homed[1] && joint_homed[2];
   if (all_triggered) {
-    // for (int i = 0; i < 3; i++) {
-    //   steppers[i]->moveTo(-1000);
-    // }
-    steppers[0]->moveTo(-1000);
-    steppers[1]->moveTo(-1000);
-    steppers[2]->moveTo(-1100);
+    for (int i = 0; i < 3; i++) {
+      steppers[i]->moveTo(-900);
+    }
+    // steppers[0]->moveTo(-1000);
+    // steppers[1]->moveTo(-1000);
+    // steppers[2]->moveTo(-1100);
     delay(100);
 
     bool all_done = false;
