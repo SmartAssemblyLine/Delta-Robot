@@ -5,9 +5,9 @@
 #define PUMP_PIN   A0   // change to your pin
 #define PUMP_IN2  A2
 
-AccelStepper stepper0(AccelStepper::DRIVER, 6, 7);
-AccelStepper stepper1(AccelStepper::DRIVER, 2, 3);
-AccelStepper stepper2(AccelStepper::DRIVER, 4, 5);
+AccelStepper stepper0(AccelStepper::DRIVER, 7, 6);
+AccelStepper stepper1(AccelStepper::DRIVER, 3, 2);
+AccelStepper stepper2(AccelStepper::DRIVER, 5, 4);
 
 AccelStepper* steppers[3] = {&stepper0, &stepper1, &stepper2};
 
@@ -22,6 +22,7 @@ bool is_homed       = false;
 bool started        = false;
 bool moving         = false;      // true while executing a trajectory
 static String buf   = "";
+bool last_ir_state=HIGH;
 
 // ─────────────────────────────────────────────────────────
 void setup() {
@@ -107,6 +108,15 @@ void waitForStart() {
 
 // ─────────────────────────────────────────────────────────
 void checkButton() {
+
+  bool current_ir_state=digitalRead(BUTTON_PIN);
+  if(current_ir_state==LOW && last_ir_state ==HIGH){
+    delay(50);
+    if(digitalRead(BUTTON_PIN)==LOW)
+    {
+      Serial.println("PICK");
+    }
+  }last_ir_state=current_ir_state;}
 //   if (digitalRead(BUTTON_PIN) == HIGH) {
 //     delay(50);  // debounce
 //     if (digitalRead(BUTTON_PIN) == HIGH) {
@@ -116,8 +126,8 @@ void checkButton() {
 //     }
 //   }
 // }
-if (digitalRead(BUTTON_PIN) == LOW) {
-       Serial.println("PICK");}}
+// if (digitalRead(BUTTON_PIN) == LOW) {
+//        Serial.println("PICK");}}
 
 // ─────────────────────────────────────────────────────────
 
