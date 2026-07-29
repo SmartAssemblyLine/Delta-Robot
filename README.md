@@ -33,8 +33,8 @@ The Delta Robot is driven by three stepper motors and uses:
 
 - **3 Stepper Motors** for robot actuation.
 - **Vacuum Pump** for object gripping.
-- **IR Sensor** to detect whether an o
-- bject has been successfully picked before continuing the task.
+- **IR Sensor** to detect whether an object has been successfully picked before continuing the task.
+- **Arduino** to control the motors, pump, and sensors.
 
 ## 🤖 Arduino Firmware
 
@@ -58,5 +58,35 @@ The`arduino_codes` directory contains the firmware used to control the robot har
 The robot uses **ROS 2 Control** to generate motion trajectories.
 
 The generated trajectory points are sent to the Arduino, which drives the three stepper motors while coordinating the vacuum pump during the pick-and-place task.
--
--**Arduino** to control the motors, pump, and sensors.
+
+## 📐 Kinematics
+
+The `kinematics` package contains:
+
+- Forward Kinematics
+- Inverse Kinematics
+- Workspace Simulation
+- Robot Client
+- Pump Client
+
+### Configuration
+
+Before using the kinematics scripts, replace the robot dimensions inside:
+
+- `Inverse_kinematics.py`
+- `forword_k.py`
+
+with the dimensions of your own Delta Robot.
+
+These values include the robot geometry such as arm lengths and platform dimensions.
+
+## 🖥️ Workspace Simulation
+
+The repository includes a workspace simulator that can be used to verify trajectories before sending them to the physical robot.
+
+### Steps
+
+ Run the python file in Delta-Robot/src/kinematics/kinematics/workspace.py
+
+
+
