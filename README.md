@@ -88,5 +88,9 @@ The repository includes a workspace simulator that can be used to verify traject
 
  Run the python file in Delta-Robot/src/kinematics/kinematics/workspace.py
 
+ <p align="center">
+  <img src="videos/viddemo.gif" alt="Delta Robot trajectory" width="300">
+</p>
+
 
 
