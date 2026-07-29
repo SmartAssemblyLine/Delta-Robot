@@ -27,3 +27,35 @@ The robot is intended for high-speed pick-and-place tasks and serves as a modula
 - Workspace simulation
 
 ---
+## 🔧 Hardware
+
+The Delta Robot is driven by three stepper motors and uses:
+
+- **3 Stepper Motors** for robot actuation.
+- **Vacuum Pump** for object gripping.
+- **IR Sensor** to detect whether an o
+- bject has been successfully picked before continuing the task.
+
+  ## 🤖 Arduino Firmware
+
+The`arduino_codes` directory contains the firmware used to control the robot hardware.
+
+### Files
+
+- **accel_delta.ino**
+  - Main firmware used during operation.
+  - Controls the three stepper motors.
+  - Executes the received trajectory.
+  - Controls the vacuum pump.
+  - Performs the homing procedure.
+
+- **pump_home_delta.ino**
+  - Controls the vacuum pump and homing sequence.
+
+- **home_new_three_motors.ino**
+  - Homes all three robot axes.
+
+- **test_dir.ino**
+  - Utility sketch used to verify the rotation direction of each stepper motor before running the complete system.
+-
+-**Arduino** to control the motors, pump, and sensors.
