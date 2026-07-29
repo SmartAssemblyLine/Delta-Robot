@@ -11,9 +11,8 @@ __pycache__/
 
 
 src/kinematics/kinematics/s_pathplanner.py
-src/kinematics/kinematics/simulation.py
-src/kinematics/kinematics/workspace.py
 src/delta_stepper_hw
+src/delta_description
 
 
 delta_joint_log.csv
