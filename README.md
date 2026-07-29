@@ -52,5 +52,11 @@ The`arduino_codes` directory contains the firmware used to control the robot har
 
 - **test_dir.ino**
   - Utility sketch used to verify the rotation direction of each stepper motor before running the complete system.
+ 
+## ⚙️ Motion Control
+
+The robot uses **ROS 2 Control** to generate motion trajectories.
+
+The generated trajectory points are sent to the Arduino, which drives the three stepper motors while coordinating the vacuum pump during the pick-and-place task.
 -
 -**Arduino** to control the motors, pump, and sensors.
