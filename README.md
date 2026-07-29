@@ -105,7 +105,7 @@ The repository includes a workspace simulator that can be used to verify traject
 ```bash
 mkdir -p ~/delta_ws/src
 cd ~/delta_ws/src
-git clone https://github.com/<your-username>/Delta-Robot.git .
+git clone https://github.com/Lola-Solomon/Delta-Robot.git .
 ```
 
 ### 2. Install Dependencies
